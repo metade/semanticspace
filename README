@@ -1,5 +1,32 @@
+= semanticspace
 
 
+
+== INSTALL
+
+The following libraries are required to install the semanticspace gem:
+
+* SVDLIBC - http://tedlab.mit.edu/~dr/SVDLIBC/
+* libsemanticspace - https://forge.ecs.soton.ac.uk/projects/semanticspace/
+
+=== Installing SVDLIBC
+
+Installing SVDLIBC can be a little tricky, as I find the Makefile tries to copy files to /.
+I usually:
+* download and uncompress the SVCDLIBC tarball from http://tedlab.mit.edu/~dr/SVDLIBC/
+* cd SVDLIBC
+* make 
+* sudo cp svdlib.h /usr/local/include/
+* sudo cp libsvd.a /usr/local/lib/
+
+=== Installing libsemanticspace
+
+Download the latest release from:
+https://forge.ecs.soton.ac.uk/projects/semanticspace/
+
+It should be a matter of running:
+* make
+* sudo make install
 
 == LICENSE:
 

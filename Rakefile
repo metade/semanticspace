@@ -6,12 +6,14 @@ require 'rake/testtask'
 require 'fileutils'
 include FileUtils
 
-CLEAN.include ['ext/semanticspace/*.{bundle,so,obj,pdb,lib,def,exp,o,log}', 'ext/semanticspace/Makefile', 
-               '**/.*.sw?', '*.gem', '.config', 'pkg', 'test/*.llss', 'doc/rdoc']
-RDOC_OPTS = ['--quiet', '--title', 'Semantic Space', '--main', 'README', '--inline-source']
+CLEAN.include [
+  'ext/semanticspace/Makefile',
+  'ext/semanticspace/*.{bundle,so,obj,pdb,lib,def,exp,o,log,dSYM}',
+  '**/.*.sw?', '*.gem', '.config', 'pkg', 'test/*.llss', 'doc', 'lib'
+]
 
-desc "Does a full compile, test run"
-task :default => [:compile, :test]
+desc "Does a full compile, test run, and build docs and gem"
+task :default => [:compile, :test, :rdoc, :gem]
 
 desc "Compiles all extensions"
 task :compile => [:semanticspace] do
@@ -25,30 +27,25 @@ task :compile => [:semanticspace] do
 end
 task :semanticspace
 
-desc "Packages up Semantic Space."
-task :package => [:clean]
-
-desc "Releases packages for all Semantic Space packages and platforms."
-task :release => [:package, :rubygems_win32]
-
 desc "Run all the tests"
 Rake::TestTask.new do |t|
-    t.libs << "test"
-    t.test_files = FileList['test/test_*.rb']
-    t.verbose = true
+  t.libs << "test"
+  t.test_files = FileList['test/test_*.rb']
+  t.verbose = true
 end
 
 Rake::RDocTask.new do |rdoc|
-    rdoc.rdoc_dir = 'doc/rdoc'
-    rdoc.options += RDOC_OPTS
-    rdoc.main = "README"
-    rdoc.rdoc_files.add ['README', 'CHANGELOG', 'COPYING', 'ext/**/*.c']
+  rdoc.rdoc_dir = 'doc'
+  rdoc.title = 'Semantic Space'
+  rdoc.options += ['--quiet', '--inline-source']
+  rdoc.main = "README"
+  rdoc.rdoc_files.add ['README', 'ext/**/*.c']
 end
 
 spec = eval(File.open('semanticspace.gemspec').read)
 Rake::GemPackageTask.new(spec) do |p|
-    p.need_tar = true
-    p.gem_spec = spec
+  p.need_tar = true
+  p.gem_spec = spec
 end
 
 extension = "semanticspace"
@@ -80,10 +77,3 @@ file ext_so => ext_files do
   end
   cp ext_so, "lib"
 end
-
-PKG_FILES = FileList[
-  "test/**/*.{rb,html,xhtml}",
-  "lib/**/*.rb",
-  "ext/**/*.{c,rb,h,rl}",
-  "CHANGELOG", "README", "Rakefile", "COPYING",
-  "extras/**/*", "lib/semanticspace.so"]
