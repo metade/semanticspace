@@ -28,6 +28,13 @@ It should be a matter of running:
 * make
 * sudo make install
 
+=== Installing semanticspace gem
+
+Once the libraries are installed, it should be a matter of running:
+cd semanticspace
+rake
+sudo gem install pkg/semanticspace-0.0.2.gem
+
 == LICENSE:
 
 The MIT License
